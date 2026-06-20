@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NursePlan Pro - Professional nursing care plan management platform for nursing education">
+  <title>NursePlan Pro - Nursing Care Plan Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    /* HEADER & NAV */
+    header {
+      background: white;
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1A6BC5;
+    }
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .nav-links a:hover {
+      color: #1A6BC5;
+    }
+    /* AUTH PAGES */
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f9f9f9 0%, white 100%);
+      padding: 20px 0;
+    }
+    .auth-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 450px;
+      padding: 40px;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .auth-header h2 {
+      font-size: 28px;
+      color: #1A6BC5;
+      margin-bottom: 8px;
+    }
+    .auth-header p {
+      color: #666;
+      font-size: 14px;
+    }
+    .role-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .role-tab {
+      padding: 10px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      transition: all 0.3s;
+      color: #666;
+    }
+    .role-tab:hover {
+      border-color: #1A6BC5;
+    }
+    .role-tab.active {
+      background: #1A6BC5;
+      color: white;
+      border-color: #1A6BC5;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #1A6BC5;
+      box-shadow: 0 0 0 3px rgba(26, 107, 197, 0.1);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .form-row .form-group {
+      margin-bottom: 0;
+    }
+    .auth-button {
+      width: 100%;
+      padding: 12px;
+      background: #1A6BC5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .auth-button:hover {
+      background: #0C447C;
+    }
+    .auth-switch {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #666;
+    }
+    .auth-switch a {
+      color: #1A6BC5;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .auth-switch a:hover {
+      text-decoration: underline;
+    }
+    .auth-back {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .auth-back a {
+      color: #1A6BC5;
+      text-decoration: none;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .role-specific {
+      display: none;
+    }
+    .role-specific.active {
+      display: block;
+    }
+    /* HERO SECTION */
+    .hero {
+      background: linear-gradient(135deg, #f9f9f9 0%, white 100%);
+      padding: 80px 0;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: #1A6BC5;
+      line-height: 1.2;
+    }
+    .hero .highlight {
+      color: #0C447C;
+    }
+    .hero > .container > p {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 40px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-buttons {
+      margin-bottom: 40px;
+    }
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      font-size: 14px;
+      color: #666;
+      flex-wrap: wrap;
+    }
+    /* BUTTONS */
+    .btn {
+      display: inline-block;
+      padding: 12px 30px;
+      margin: 10px;
+      background: #1A6BC5;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .btn:hover {
+      background: #0C447C;
+    }
+    .btn-outline {
+      background: white;
+      color: #1A6BC5;
+      border: 2px solid #1A6BC5;
+    }
+    .btn-outline:hover {
+      background: #f9f9f9;
+    }
+    /* SECTION TITLE */
+    .section-title {
+      text-align: center;
+      font-size: 36px;
+      color: #1A6BC5;
+      margin-bottom: 50px;
+      margin-top: 60px;
+    }
+    /* FEATURES SECTION */
+    .features {
+      padding: 60px 0;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    .feature {
+      padding: 30px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #eee;
+      transition: all 0.3s;
+    }
+    .feature:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transform: translateY(-5px);
+    }
+    .feature-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+    .feature h3 {
+      margin-bottom: 12px;
+      color: #1A6BC5;
+      font-size: 18px;
+    }
+    .feature p {
+      color: #666;
+      font-size: 14px;
+    }
+    /* STATS SECTION */
+    .stats {
+      background: #1A6BC5;
+      color: white;
+      padding: 60px 0;
+      text-align: center;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+    }
+    .stat-item {
+      padding: 20px;
+    }
+    .stat-number {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    /* TESTIMONIALS */
+    .testimonials {
+      padding: 60px 0;
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+    .testimonial {
+      padding: 30px;
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 8px;
+    }
+    .testimonial-text {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .author-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #1A6BC5;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .author-info {
+      flex: 1;
+    }
+    .author-name {
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+    .author-role {
+      font-size: 12px;
+      color: #999;
+    }
+    /* FAQ SECTION */
+    .faq {
+      padding: 60px 0;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .faq-item {
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .faq-question {
+      width: 100%;
+      padding: 20px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .faq-question:hover {
+      color: #1A6BC5;
+    }
+    .faq-arrow {
+      font-size: 12px;
+      transition: transform 0.3s;
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s;
+      padding: 0 20px;
+    }
+    .faq-item.active .faq-answer {
+      max-height: 300px;
+      padding: 0 20px 20px 20px;
+    }
+    .faq-item.active .faq-arrow {
+      transform: rotate(180deg);
+    }
+    .faq-answer-text {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.7;
+    }
+    /* CTA SECTION */
+    .cta {
+      background: #1A6BC5;
+      color: white;
+      padding: 60px 0;
+      text-align: center;
+      margin-top: 60px;
+    }
+    .cta h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+    .cta p {
+      font-size: 16px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    /* FOOTER */
+    footer {
+      background: #0C447C;
+      color: white;
+      padding: 50px 0 20px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-col h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 13px;
+      color: white;
+      text-decoration: none;
+      opacity: 0.6;
+      margin-bottom: 8px;
+      transition: opacity 0.3s;
+    }
+    .footer-col a:hover {
+      opacity: 1;
+    }
+    .footer-brand {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+    .footer-brand-desc {
+      font-size: 13px;
+      opacity: 0.6;
+      line-height: 1.6;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.5;
+    }
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+      .nav-links {
+        gap: 15px;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+      .trust-badges {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .role-tabs {
+        grid-template-columns: 1fr;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIGN UP PAGE -->
+<div class="page active" id="page-home">
+
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">🏥 NursePlan Pro</div>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#testimonials">Testimonials</a>
+          <a href="#faq">FAQ</a>
+          <a href="#" onclick="showPage('signup')" class="btn">Sign Up</a>
+          <a href="#" onclick="showPage('signin')" style="color: #1A6BC5; text-decoration: none; font-weight: 600;">Sign In</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="container">
+        <h1>Create Professional Nursing Care Plans <span class="highlight">in Minutes</span></h1>
+        <p>Digital care plans, clinical logbooks, instructor feedback, and nursing documentation in one platform.</p>
+        <div class="hero-buttons">
+          <a href="#" onclick="showPage('signup')" class="btn">Start Free Trial</a>
+          <a href="#" onclick="showPage('signin')" class="btn btn-outline">Sign In</a>
+        </div>
+        <div class="trust-badges">
+          <span>✓ 12,000+ nursing students</span>
+          <span>✓ 340+ nursing schools</span>
+          <span>✓ 98,000+ care plans created</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section id="features">
+      <div class="container">
+        <h2 class="section-title">Everything nursing education needs</h2>
+        <div class="features-grid">
+          <div class="feature">
+            <div class="feature-icon">📋</div>
+            <h3>Smart Care Plan Builder</h3>
+            <p>Step-by-step ADPIE workflow with auto-save, draft management, and version history.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📚</div>
+            <h3>Diagnosis Library</h3>
+            <p>300+ NANDA diagnoses with definitions, interventions, rationales, and references.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">✨</div>
+            <h3>AI-Powered Suggestions</h3>
+            <p>Get SMART goals, evidence-based interventions, and nursing rationales automatically.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">💬</div>
+            <h3>Instructor Feedback System</h3>
+            <p>Inline comments, grading rubrics, and real-time feedback on submitted care plans.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📖</div>
+            <h3>Clinical Logbook</h3>
+            <p>Track procedures, clinical hours, competency milestones, and supervisor approvals.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📄</div>
+            <h3>PDF Export & Print</h3>
+            <p>Professional formatted PDFs of any care plan ready for submission or printing.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📱</div>
+            <h3>Mobile Access</h3>
+            <p>Full access on any device — update care plans from the ward, in real time.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📊</div>
+            <h3>Analytics Dashboard</h3>
+            <p>Track student progress, submission rates, grade averages, and clinical activity.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">12,400+</div>
+            <div class="stat-label">Nursing Students</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">340+</div>
+            <div class="stat-label">Nursing Schools</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">98,000+</div>
+            <div class="stat-label">Care Plans Created</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section id="testimonials">
+      <div class="container">
+        <h2 class="section-title">Loved by students and instructors</h2>
+        <div class="testimonials-grid">
+          <div class="testimonial">
+            <div class="testimonial-text">"NursePlan Pro cut the time I spend on care plans by half. The AI suggestions help me think through nursing diagnoses I might have missed."</div>
+            <div class="testimonial-author">
+              <div class="author-avatar">AO</div>
+              <div class="author-info">
+                <div class="author-name">Amina Osei</div>
+                <div class="author-role">3rd year nursing student</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial">
+            <div class="testimonial-text">"Grading 40 care plans used to take me an entire weekend. With the inline feedback tools, I can review submissions in half the time."</div>
+            <div class="testimonial-author">
+              <div class="author-avatar">MK</div>
+              <div class="author-info">
+                <div class="author-name">Mr. Kariuki</div>
+                <div class="author-role">Clinical instructor, Nairobi</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial">
+            <div class="testimonial-text">"We rolled out NursePlan Pro across three campuses in two weeks. The admin dashboard makes managing hundreds of students effortless."</div>
+            <div class="testimonial-author">
+              <div class="author-avatar">DN</div>
+              <div class="author-info">
+                <div class="author-name">Dr. Nzinga</div>
+                <div class="author-role">Director of nursing education</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section id="faq">
+      <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq">
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <button class="faq-question">
+              Is patient data kept confidential?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-text">Yes. NursePlan Pro uses patient initials only — no full names or identifying information are stored. All data is encrypted in transit and at rest, and we follow healthcare data security best practices and GDPR principles.</div>
+            </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <button class="faq-question">
+              Can my school use NursePlan Pro across multiple campuses?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-text">Yes. The Enterprise plan supports multi-campus management with a unified admin dashboard, allowing you to manage students, instructors, and reports across all locations from one place.</div>
+            </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <button class="faq-question">
+              Does the AI replace nursing judgment?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-text">No. AI features are suggestions only — they assist students in thinking through their care plans, not replace clinical reasoning. All final decisions remain with the nursing student and are reviewed by instructors.</div>
+            </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <button class="faq-question">
+              Can I export care plans to PDF?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-text">Yes. Every care plan can be exported as a professionally formatted PDF with one click, ready for submission, printing, or portfolio inclusion.</div>
+            </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <button class="faq-question">
+              Is there a free trial?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-text">Yes. Students get a 14-day free trial with full feature access. Schools can request a 30-day pilot with up to 50 students at no cost.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section id="contact" class="cta">
+      <div class="container">
+        <h2>Ready to transform nursing education?</h2>
+        <p>Join 12,000+ nursing students and 340+ schools using NursePlan Pro.</p>
+        <a href="#" onclick="showPage('signup')" class="btn">Start Free Trial</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">🏥 NursePlan Pro</div>
+          <div class="footer-brand-desc">Professional nursing care plan management for nursing education.</div>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#">Documentation</a>
+          <a href="#">API</a>
+          <a href="#">Blog</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+          <a href="#">Careers</a>
+          <a href="#">Press</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Security</a>
+          <a href="#">Compliance</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 NursePlan Pro. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- SIGN UP PAGE -->
+<div class="page" id="page-signup">
+  <div class="auth-page">
+    <div class="auth-container">
+      <div class="auth-back">
+        <a onclick="showPage('home')">← Back to home</a>
+      </div>
+      <div class="auth-header">
+        <h2>Create Account</h2>
+        <p>Join 12,000+ nursing students using NursePlan Pro</p>
+      </div>
+      <div class="role-tabs">
+        <button class="role-tab active" onclick="selectSignupRole('student')">🎓 Student</button>
+        <button class="role-tab" onclick="selectSignupRole('instructor')">👨‍🏫 Instructor</button>
+        <button class="role-tab" onclick="selectSignupRole('admin')">👔 Admin</button>
+      </div>
+
+      <!-- Student Sign Up -->
+      <form class="role-specific active" id="form-student-signup">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="John" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Doe" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="john@university.edu" required>
+        </div>
+        <div class="form-group">
+          <label>University/School</label>
+          <input type="text" placeholder="University of Nairobi" required>
+        </div>
+        <div class="form-group">
+          <label>Year of Study</label>
+          <select required>
+            <option value="">Select year</option>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="At least 8 characters" required>
+        </div>
+        <button type="submit" class="auth-button">Create Account</button>
+      </form>
+
+      <!-- Instructor Sign Up -->
+      <form class="role-specific" id="form-instructor-signup">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="Jane" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Smith" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="jane@university.edu" required>
+        </div>
+        <div class="form-group">
+          <label>School Name</label>
+          <input type="text" placeholder="University of Nairobi" required>
+        </div>
+        <div class="form-group">
+          <label>Department</label>
+          <input type="text" placeholder="Clinical Nursing" required>
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" placeholder="Senior Clinical Instructor" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="At least 8 characters" required>
+        </div>
+        <button type="submit" class="auth-button">Create Account</button>
+      </form>
+
+      <!-- Admin Sign Up -->
+      <form class="role-specific" id="form-admin-signup">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="Admin" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="User" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>School Name</label>
+          <input type="text" placeholder="University of Nairobi" required>
+        </div>
+        <div class="form-group">
+          <label>School Email</label>
+          <input type="email" placeholder="admin@university.edu" required>
+        </div>
+        <div class="form-group">
+          <label>Your Email</label>
+          <input type="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Country</label>
+          <input type="text" placeholder="Kenya" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="At least 8 characters" required>
+        </div>
+        <button type="submit" class="auth-button">Create School Account</button>
+      </form>
+
+      <div class="auth-switch">
+        Already have an account? <a onclick="showPage('signin')">Sign In</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN IN PAGE -->
+<div class="page" id="page-signin">
+  <div class="auth-page">
+    <div class="auth-container">
+      <div class="auth-back">
+        <a onclick="showPage('home')">← Back to home</a>
+      </div>
+      <div class="auth-header">
+        <h2>Welcome Back</h2>
+        <p>Sign in to your NursePlan Pro account</p>
+      </div>
+      <div class="role-tabs">
+        <button class="role-tab active" onclick="selectSigninRole('student')">🎓 Student</button>
+        <button class="role-tab" onclick="selectSigninRole('instructor')">👨‍🏫 Instructor</button>
+        <button class="role-tab" onclick="selectSigninRole('admin')">👔 Admin</button>
+      </div>
+
+      <!-- Student Sign In -->
+      <form class="role-specific active" id="form-student-signin">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="john@university.edu" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="Your password" required>
+        </div>
+        <div style="text-align: right; margin-bottom: 20px;">
+          <a href="#" style="color: #1A6BC5; text-decoration: none; font-size: 13px;">Forgot password?</a>
+        </div>
+        <button type="submit" class="auth-button">Sign In</button>
+      </form>
+
+      <!-- Instructor Sign In -->
+      <form class="role-specific" id="form-instructor-signin">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="jane@university.edu" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="Your password" required>
+        </div>
+        <div style="text-align: right; margin-bottom: 20px;">
+          <a href="#" style="color: #1A6BC5; text-decoration: none; font-size: 13px;">Forgot password?</a>
+        </div>
+        <button type="submit" class="auth-button">Sign In</button>
+      </form>
+
+      <!-- Admin Sign In -->
+      <form class="role-specific" id="form-admin-signin">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="admin@university.edu" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="Your password" required>
+        </div>
+        <div style="text-align: right; margin-bottom: 20px;">
+          <a href="#" style="color: #1A6BC5; text-decoration: none; font-size: 13px;">Forgot password?</a>
+        </div>
+        <button type="submit" class="auth-button">Sign In</button>
+      </form>
+
+      <div class="auth-switch">
+        Don't have an account? <a onclick="showPage('signup')">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function selectSignupRole(role) {
+    document.querySelectorAll('#page-signup .role-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('#page-signup .role-specific').forEach(f => f.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('form-' + role + '-signup').classList.add('active');
+  }
+
+  function selectSigninRole(role) {
+    document.querySelectorAll('#page-signin .role-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('#page-signin .role-specific').forEach(f => f.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('form-' + role + '-signin').classList.add('active');
+  }
+
+  function toggleFaq(element) {
+    element.classList.toggle('active');
+  }
+</script>
+
+</body>
+</html>
